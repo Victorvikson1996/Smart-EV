@@ -7,6 +7,7 @@ export type AuthStackParamList = {
   Signup: undefined;
   MainApp: undefined;
   Logout: undefined;
+  ForgotPassword: undefined;
 };
 
 export type MainTabParamList = {
@@ -17,8 +18,18 @@ export type MainTabParamList = {
   Settings: undefined;
 };
 
+export type AppStackParamList = {
+  Home: undefined;
+  ChargingStationDetails: { stationId: string };
+  ChargingProgress: { sessionId: string };
+  Payment: { amount: number };
+};
+
 export type AuthNavigationProp<T extends keyof AuthStackParamList> =
   NativeStackNavigationProp<AuthStackParamList, T>;
 
 export type MainTabNavigationProp<T extends keyof MainTabParamList> =
   BottomTabNavigationProp<MainTabParamList, T>;
+
+export type AppNavigationProp<T extends keyof AppStackParamList> =
+  NativeStackNavigationProp<AppStackParamList, T>;
