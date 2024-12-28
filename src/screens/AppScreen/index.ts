@@ -2,3 +2,8 @@ export * from './HomeScreen';
 export * from './MapScreen';
 export * from './SectionScreen';
 export * from './Reservation';
+export * from './AddCar';
+export * from './CarBrandScreen';
+export * from './CarBrandDetailScreen';
+export * from './CarChargerScreen';
+export * from './CarChargerSuccess';
