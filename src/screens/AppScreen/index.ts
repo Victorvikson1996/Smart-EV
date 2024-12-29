@@ -7,3 +7,4 @@ export * from './CarBrandScreen';
 export * from './CarBrandDetailScreen';
 export * from './CarChargerScreen';
 export * from './CarChargerSuccess';
+export * from './ProfileScrreen';
