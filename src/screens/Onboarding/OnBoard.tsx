@@ -11,15 +11,7 @@ import {
 import React, { useState, useRef } from 'react';
 import { Button, ContentWrapper } from '../../components';
 import { AuthNavigationProp } from '../../Navigation/types';
-import {
-  apppurple,
-  whiteText,
-  lightBlue,
-  green,
-  appgreen,
-  lightGrey,
-  greenB
-} from '../../constants';
+import { lightGrey, greenB } from '../../constants';
 
 type SplashScreenProps = {
   navigation: AuthNavigationProp<'Splash'>;

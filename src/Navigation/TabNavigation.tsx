@@ -1,6 +1,5 @@
 import { View, Text, Platform } from 'react-native';
 import React from 'react';
-import { TabNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TabIcon } from '../components';
 import {
@@ -24,7 +23,7 @@ export const TabNavigation = () => {
             routeName={route.name}
             focused={focused}
             color={color}
-            size={size}
+            size={25}
           />
         ),
         tabBarActiveTintColor: greenB,
@@ -37,6 +36,10 @@ export const TabNavigation = () => {
           // elevation: 5,
           height: Platform.OS === 'ios' ? 100 : 100,
           paddingTop: 10
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600'
         }
       })}
     >

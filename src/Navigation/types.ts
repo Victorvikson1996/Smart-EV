@@ -49,11 +49,11 @@ export type AppStackParamList = {
   StationSearch: undefined;
 };
 
-export type AuthNavigationProp<T extends keyof AuthStackParamList> =
-  NativeStackNavigationProp<AuthStackParamList, T>;
+export type AuthNavigationProp<ScreenName extends keyof AuthStackParamList> =
+  NativeStackNavigationProp<AuthStackParamList, ScreenName>;
 
-export type MainTabNavigationProp<T extends keyof MainTabParamList> =
-  BottomTabNavigationProp<MainTabParamList, T>;
+export type MainTabNavigationProp<ScreenName extends keyof MainTabParamList> =
+  BottomTabNavigationProp<MainTabParamList, ScreenName>;
 
-export type AppNavigationProp<T extends keyof AppStackParamList> =
-  NativeStackNavigationProp<AppStackParamList, T>;
+export type AppNavigationProp<ScreenName extends keyof AppStackParamList> =
+  NativeStackNavigationProp<AppStackParamList, ScreenName>;

@@ -7,3 +7,4 @@ export * from './Headers';
 export * from './ListItems';
 export * from './Loader';
 export * from './TabIcon';
+export * from './SuccessModal';

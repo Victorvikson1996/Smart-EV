@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, type ViewStyle } from 'react-native';
 import Icon from '@expo/vector-icons/MaterialIcons';
-import { primaryBlue, lightGrey } from '../constants';
+import { primaryBlue, lightGrey, appgreen } from '../constants';
 
 interface CheckboxProps {
   selected: boolean;
@@ -13,7 +13,7 @@ interface CheckboxProps {
 export const Checkbox = ({
   selected,
   onSelect,
-  color = primaryBlue,
+  color = appgreen,
   style
 }: CheckboxProps) => (
   <TouchableOpacity

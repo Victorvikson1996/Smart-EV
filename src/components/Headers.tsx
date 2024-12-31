@@ -13,6 +13,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+  appgreen,
   apppurple,
   borderGrey,
   darkGreen,
@@ -78,7 +79,7 @@ export const BackHeader = ({
               style={{
                 flexDirection: 'row',
                 margin: 3,
-                backgroundColor: apppurple,
+                backgroundColor: appgreen,
                 height: 3,
                 width: '35%'
                 // width: `${progressValue}%`,
