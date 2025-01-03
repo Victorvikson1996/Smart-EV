@@ -8,3 +8,4 @@ export * from './ListItems';
 export * from './Loader';
 export * from './TabIcon';
 export * from './SuccessModal';
+export * from './CarBrandItem';

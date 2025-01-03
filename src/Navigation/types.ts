@@ -9,7 +9,8 @@ export type AuthStackParamList = {
   Otp: undefined;
   AddCar: undefined;
   CarBrand: undefined;
-  CarBrandDetails: undefined;
+  CarBrandDetails: { brandId: string; models: string[] };
+
   CarCharger: undefined;
   AddCarName: undefined;
   AddCarSuccess: undefined;

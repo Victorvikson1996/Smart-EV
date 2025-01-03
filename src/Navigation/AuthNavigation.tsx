@@ -8,7 +8,10 @@ import {
   CarBrandDetailScreen,
   CarChargerSuccess
 } from '../screens/AppScreen';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  StackScreenProps
+} from '@react-navigation/stack';
 import { OnBoard } from '../screens/Onboarding';
 import { type NativeStackNavigationOptions } from '@react-navigation/native-stack';
 
@@ -31,7 +34,7 @@ export const AuthNavigation = () => {
       <AuthStack.Screen name='CarBrand' component={CarBrandScreen} />
       <AuthStack.Screen name='CarCharger' component={CarChargerScreen} />
       <AuthStack.Screen
-        name='CarBrandDetail'
+        name='CarBrandDetails'
         component={CarBrandDetailScreen}
       />
       <AuthStack.Screen
