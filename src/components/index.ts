@@ -9,3 +9,5 @@ export * from './Loader';
 export * from './TabIcon';
 export * from './SuccessModal';
 export * from './CarBrandItem';
+export * from './ModelItem';
+export * from './ChargerItem';
