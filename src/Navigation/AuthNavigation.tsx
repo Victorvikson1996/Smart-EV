@@ -1,6 +1,11 @@
 import { View, Text } from 'react-native';
 import React from 'react';
-import { SignupScreen, LoginScreen, OtpScreen } from '../screens/AuthScreen';
+import {
+  SignupScreen,
+  LoginScreen,
+  OtpScreen,
+  ForgortPassword
+} from '../screens/AuthScreen';
 import {
   AddCar,
   CarBrandScreen,
@@ -29,6 +34,7 @@ export const AuthNavigation = () => {
       <AuthStack.Screen name='Splash' component={OnBoard} />
       <AuthStack.Screen name='Login' component={LoginScreen} />
       <AuthStack.Screen name='Signup' component={SignupScreen} />
+      <AuthStack.Screen name='ForgotPassword' component={ForgortPassword} />
       <AuthStack.Screen name='Otp' component={OtpScreen} />
       <AuthStack.Screen name='AddCar' component={AddCar} />
       <AuthStack.Screen name='CarBrand' component={CarBrandScreen} />

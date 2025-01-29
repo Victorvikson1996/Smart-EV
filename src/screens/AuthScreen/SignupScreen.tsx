@@ -22,6 +22,7 @@ import { signUpSchema } from '../../lib/Schemas';
 import { apppurple, secondaryTextColor, appgreen } from '../../constants';
 import { FlagFranceIcon } from '../../assets/icons';
 import SuccessModal from '../../components/SuccessModal';
+import { useAuth } from '../../api';
 
 type SignupScreenProps = {
   navigation: AuthNavigationProp<'Login'>;
@@ -49,15 +50,17 @@ export const SignupScreen = ({ navigation }: SignupScreenProps) => {
   const ref = useRef<SuccessModalHandle>(null);
   const [isChecked, setChecked] = useState(false);
 
-  const signUpUser = async (
-    Email: string,
-    Password: string,
-    FirstName: string,
-    LastName: string,
-    Phone: string
-  ) => {
-    navigation.navigate('Login');
-  };
+  const { signUpUser } = useAuth();
+
+  // const signUpUser = async (
+  //   Email: string,
+  //   Password: string,
+  //   FirstName: string,
+  //   LastName: string,
+  //   Phone: string
+  // ) => {
+  //   navigation.navigate('Login');
+  // };
 
   const onSubmit = async (data: SignUpFormData) => {
     setLoading(true);

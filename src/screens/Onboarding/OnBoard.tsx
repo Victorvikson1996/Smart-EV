@@ -123,14 +123,14 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   indicator: {
-    backgroundColor: greenB,
+    backgroundColor: lightGrey,
     height: 3,
     width: 75,
     marginHorizontal: 2,
     borderRadius: 3
   },
   indicatorActive: {
-    backgroundColor: lightGrey
+    backgroundColor: greenB
   },
   slide: {
     width: Dimensions.get('window').width,

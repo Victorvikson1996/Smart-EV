@@ -5,6 +5,7 @@ import {
   View,
   Platform,
   KeyboardAvoidingView,
+  SafeAreaView,
   type ViewStyle,
   type StatusBarStyle
 } from 'react-native';
@@ -74,6 +75,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   inset: {
-    width: '100%'
+    width: '100%',
   }
 });

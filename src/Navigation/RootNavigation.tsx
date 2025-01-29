@@ -5,12 +5,14 @@ import { TabNavigation } from './TabNavigation';
 import { AuthNavigation } from './AuthNavigation';
 import { HomeNavigation } from './HomeNavigation';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useAuth } from '../api';
 
 const Stack = createStackNavigator();
 
 const headerOptions = { headerShown: false };
 
 export const RootNavigation = () => {
+  const { user } = useAuth();
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={headerOptions}>

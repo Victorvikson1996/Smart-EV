@@ -22,6 +22,7 @@ import {
 
 import { AuthNavigationProp } from '../../Navigation/types';
 import SuccessModal, { SuccessModalHandle } from '../../components/Success';
+import { useAuth } from '../../api';
 
 interface LoginFormData {
   emailOrPhone: string;
@@ -33,9 +34,9 @@ type LoginScreenProps = {
 };
 
 export const LoginScreen = ({ navigation }: LoginScreenProps) => {
-  // const { loginUser } = useAuth();
+  const { loginUser } = useAuth();
 
-  const loginUser = async (emailOrPhone: string, password: string) => {
+  const _loginUser = async (emailOrPhone: string, password: string) => {
     navigation.navigate('AddCar');
   };
 
@@ -52,7 +53,8 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      await loginUser(data.emailOrPhone, data.password);
+      // await loginUser(data.emailOrPhone, data.password);
+      await _loginUser(data.emailOrPhone, data.password);
       Alert.alert('Login Successful');
       navigation.navigate('AddCar');
     } catch (error) {
@@ -121,12 +123,12 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
           <TouchableOpacity
             style={{ alignItems: 'center', marginTop: 20 }}
             onPress={() => {
-              navigation.navigate('Signup');
+              navigation.navigate('ForgotPassword');
             }}
           >
             <Text>
-              Don't have an account?{' '}
-              <Text style={{ fontWeight: '700' }}>Sign Up</Text>
+              Forgotten your?{' '}
+              <Text style={{ fontWeight: '700' }}>Resset Password</Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>

@@ -35,7 +35,7 @@ export const CarBrandDetailScreen = ({
     return (
       <ContentWrapper
         style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
-      >
+        >
         <Text onPress={() => navigation.goBack()} style={{ color: lightGrey }}>
           Brand not found
         </Text>

@@ -52,3 +52,36 @@ export const loginSchema = z.object({
     .string()
     .min(6, { message: 'Password must be at least 6 characters' })
 });
+
+export const _resetPasswordSchema = z.object({
+  email: z.string().nonempty({ message: 'Email  is required' })
+});
+
+export const resetPasswordWithTokenSchema = z.object({
+  token: z.string().nonempty({ message: 'Token is required' }),
+  newPassword: z
+    .string()
+    .nonempty({ message: 'New password is required' })
+    .min(6, { message: 'Password must be at least 6 characters long' })
+});
+
+export const resetPasswordSchema = z
+  .object({
+    email: z
+      .string()
+      .nonempty({ message: 'Email is required' })
+      .email({ message: 'Invalid email format' }),
+
+    newPassword: z
+      .string()
+      .nonempty({ message: 'New password is required' })
+      .min(6, { message: 'Password must be at least 6 characters long' }),
+
+    confirmNewPassword: z
+      .string()
+      .nonempty({ message: 'Please confirm your password' })
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmNewPassword']
+  });
