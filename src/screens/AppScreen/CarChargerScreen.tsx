@@ -28,7 +28,7 @@ export const CarChargerScreen = ({
     (brand) => brand.id === brandId
   )?.models.find((model) => model.id === modelId);
 
-  if (!brand) {
+  if (brand) {
     return (
       <ContentWrapper
         style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
@@ -43,7 +43,6 @@ export const CarChargerScreen = ({
   return (
     <ContentWrapper style={styles.container}>
       <BackHeader title={model?.name} showBack={true} />
-
       <View style={styles.content}>
         <Image source={{ uri: model?.image }} style={styles.modelImage} />
 

@@ -35,7 +35,7 @@ export const CarBrandDetailScreen = ({
     return (
       <ContentWrapper
         style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
-        >
+      >
         <Text onPress={() => navigation.goBack()} style={{ color: lightGrey }}>
           Brand not found
         </Text>
@@ -61,7 +61,7 @@ export const CarBrandDetailScreen = ({
         <View style={styles.modelText}>
           <Text style={styles.text}>Model</Text>
           <Text style={{ marginTop: 10, fontSize: 16, color: 'grey' }}>
-            Chose the actaul model. We use the battery size and kW effect to
+            Choose the actaul model. We use the battery size and kW effect to
             give you accurate charging estimate{' '}
           </Text>
           <View style={styles.content}>

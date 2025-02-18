@@ -11,7 +11,7 @@ export const AddCar = ({ navigation }: AddCarScreenProps) => {
   return (
     <ContentWrapper style={styles.container}>
       <BackHeader
-        title='Add Car'
+        title='Add Vehicle'
         showBack={false}
         RightComponent={
           <TouchableOpacity
@@ -25,12 +25,12 @@ export const AddCar = ({ navigation }: AddCarScreenProps) => {
       <View style={styles.content}>
         <View>
           <Text style={{ fontSize: 16, marginBottom: 20, color: 'grey' }}>
-            Connect your car to see the state of your charger, enable more
+            Connect your vehicle to see the state of your charger, enable more
             charger settings and more filter options{' '}
           </Text>
         </View>
         <Button
-          text='Add Car'
+          text='Add Vehicle'
           onPress={() => navigation.navigate('CarBrand')}
         />
       </View>

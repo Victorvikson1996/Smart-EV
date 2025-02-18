@@ -145,10 +145,11 @@ export const ForgortPassword = ({ navigation }: ForgortPassword) => {
                 )}
               />
             </View>
+            <View style={{ paddingHorizontal: 20 }}>
+              <Button text='Reset Password' onPress={handleSubmit(onSubmit)} />
+            </View>
           </View>
-          <View style={{ paddingHorizontal: 20 }}>
-            <Button text='Reset Password' onPress={handleSubmit(onSubmit)} />
-          </View>
+
           <TouchableOpacity
             style={{ alignItems: 'center', marginTop: 20 }}
             onPress={() => {

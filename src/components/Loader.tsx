@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   type ViewStyle
 } from 'react-native';
-import { apppurple } from '../constants';
+import { appgreen, apppurple } from '../constants';
 
 type LoaderProps = {
   size?: 'small' | 'large';
@@ -17,7 +17,7 @@ type LoaderProps = {
 
 export const Loader = ({
   size = 'large',
-  color = apppurple,
+  color = appgreen,
   backgroundColor = '#fff',
   inline = false,
   style

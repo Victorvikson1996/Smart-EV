@@ -140,9 +140,11 @@ const styles = StyleSheet.create({
     padding: 20
   },
   slideImage: {
-    height: 250,
-    width: 350,
-    alignSelf: 'flex-end'
+    // height: 250,
+    height: 300,
+    width: Dimensions.get('window').width,
+    alignSelf: 'center',
+    alignItems: 'center'
   },
   slideContent: {
     alignItems: 'center',
