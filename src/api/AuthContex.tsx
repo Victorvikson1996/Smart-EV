@@ -71,6 +71,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const signInWithGmail = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google'
+      });
+
+      if (error) throw error;
+
+      if (data) {
+        console.log('User data:', data);
+      }
+    } catch (error) {
+      console.error('Error signing in with Gmail:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const _signUpUser = async (
     email: string,
     password: string,

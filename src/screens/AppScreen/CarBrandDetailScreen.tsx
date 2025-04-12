@@ -73,7 +73,8 @@ export const CarBrandDetailScreen = ({
                   model={item}
                   onPress={() =>
                     navigation.navigate('CarCharger', {
-                      modelId: item.id
+                      modelId: item.id,
+                      brandId: brandId
                     })
                   }
                 />

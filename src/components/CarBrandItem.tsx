@@ -4,9 +4,8 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { CarBrand } from '../types';
 import { AuthNavigationProp } from '../Navigation/types';
 
-type CarBrandItemProps = {
+export type CarBrandItemProps = {
   brand: CarBrand;
-
   navigation: AuthNavigationProp<'CarBrand'>;
 };
 

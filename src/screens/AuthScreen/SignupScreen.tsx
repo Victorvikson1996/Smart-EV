@@ -230,7 +230,7 @@ export const SignupScreen = ({ navigation }: SignupScreenProps) => {
         ref={ref}
         title='Registration Successful'
         btnText='Continue'
-        subtitle=''
+        subtitle={`Your account has been created! Check your email for a confirmation link and a warm welcome from Smartev.`}
         btnColor={apppurple}
       />
     </ContentWrapper>
