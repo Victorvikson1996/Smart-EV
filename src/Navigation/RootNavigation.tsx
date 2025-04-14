@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { TabNavigation } from './TabNavigation';
@@ -13,12 +12,18 @@ const headerOptions = { headerShown: false };
 
 export const RootNavigation = () => {
   const { user } = useAuth();
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={headerOptions}>
-        <Stack.Screen name='Auth' component={AuthNavigation} />
-        <Stack.Screen name='Tab' component={TabNavigation} />
-        <Stack.Screen name='Home' component={HomeNavigation} />
+        {user ? (
+          <>
+            <Stack.Screen name='Tab' component={TabNavigation} />
+            <Stack.Screen name='Home' component={HomeNavigation} />
+          </>
+        ) : (
+          <Stack.Screen name='Auth' component={AuthNavigation} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

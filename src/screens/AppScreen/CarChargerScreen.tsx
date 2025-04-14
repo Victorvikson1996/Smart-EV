@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, FlatList, Alert } from 'react-native';
 import React, { useState, useRef, useCallback } from 'react';
-import { AuthNavigationProp } from '../../Navigation/types';
+import { AuthNavigationProp, AuthStackParamList } from '../../Navigation/types';
 import { EV_CAR_BRANDS, lightGrey } from '../../constants';
 import {
   BackHeader,
@@ -11,6 +11,7 @@ import {
 import { supabase } from '../../api';
 import { ChargerType } from '../../types';
 import { useAuth } from '../../api';
+import { RouteProp } from '@react-navigation/native';
 
 export type CarChargerScreenProps = {
   route: {
@@ -34,31 +35,44 @@ export const CarChargerScreen = ({
     (brand) => brand.id === brandId
   )?.models.find((model) => model.id === modelId);
 
-  console.log('Charger Types:', model?.chargerTypes);
+  if (!brand || !model) {
+    return (
+      <ContentWrapper
+        style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
+      >
+        <Text onPress={() => navigation.goBack()} style={{ color: lightGrey }}>
+          Brand not found
+        </Text>
+      </ContentWrapper>
+    );
+  }
 
-  const chargeSpeed = EV_CAR_BRANDS.find(
-    (brands) => brands.id === brandId
-  )?.models.find((models) => models.id === modelId)?.chargeSpeedKw;
+  const chargeSpeed = model?.chargeSpeedKw;
+  const typicalChargeSpeed = model?.typicalChargeSpeedKw;
+  const batteryCapacity = model?.batteryCapacityKwh;
 
-  const typicalChargeSpeed = EV_CAR_BRANDS.find(
-    (brands) => brands.id === brandId
-  )?.models.find((models) => models.id === modelId)?.typicalChargeSpeedKw;
-  const batteryCapacity = EV_CAR_BRANDS.find(
-    (brands) => brands.id === brandId
-  )?.models.find((models) => models.id === modelId)?.batteryCapacityKwh;
+  // const chargeSpeed = EV_CAR_BRANDS.find(
+  //   (brands) => brands.id === brandId
+  // )?.models.find((models) => models.id === modelId)?.chargeSpeedKw;
+
+  // const typicalChargeSpeed = EV_CAR_BRANDS.find(
+  //   (brands) => brands.id === brandId
+  // )?.models.find((models) => models.id === modelId)?.typicalChargeSpeedKw;
+  // const batteryCapacity = EV_CAR_BRANDS.find(
+  //   (brands) => brands.id === brandId
+  // )?.models.find((models) => models.id === modelId)?.batteryCapacityKwh;
 
   const [selectedChargerType, setSelectedChargerType] =
     useState<ChargerType | null>(null);
+  console.log('Selected Charger Type:', selectedChargerType);
 
   const { user } = useAuth();
 
   const handleSelectCharger = useCallback((charger: ChargerType) => {
-    console.log('Selecting charger:', charger.name);
     setSelectedChargerType(charger);
   }, []);
 
   const handleAddVehicle = async () => {
-    console.log('Add Vehicle - Selected Charger:', selectedChargerType);
     if (!selectedChargerType) {
       Alert.alert('Error', 'Please select a charger type.');
       return;
@@ -72,14 +86,14 @@ export const CarChargerScreen = ({
     try {
       const carData = {
         user_id: user.id,
-        brand_id: brand?.id,
-        brand_name: brand?.name,
-        model_id: model?.id,
-        model_name: model?.name,
+        brand_id: brand.id,
+        brand_name: brand.name,
+        model_id: model.id,
+        model_name: model.name,
         battery_capacity_kwh: batteryCapacity,
         charge_speed_kw: chargeSpeed,
         typical_charge_speed_kw: typicalChargeSpeed,
-        charger_type: selectedChargerType
+        charger_type: selectedChargerType.name
       };
 
       const { error } = await supabase.from('cars').insert([carData]);
@@ -90,11 +104,11 @@ export const CarChargerScreen = ({
 
       Alert.alert(
         'Vehicle Added!',
-        `Your ${brand?.name} ${model?.name} with ${selectedChargerType.name} has been added to Smartev.`,
+        `Your ${brand.name} ${model.name} with ${selectedChargerType.name} has been added to Smartev.`,
         [
           {
             text: 'OK',
-            onPress: () => navigation.goBack() // Or navigate to VehicleListScreen
+            onPress: () => navigation.navigate('CarChargerSuccess')
           }
         ]
       );
@@ -104,26 +118,14 @@ export const CarChargerScreen = ({
     }
   };
 
-  if (!brand || !model) {
-    return (
-      <ContentWrapper
-        style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
-      >
-        <Text onPress={() => navigation.goBack()} style={{ color: lightGrey }}>
-          Brand not found
-        </Text>
-      </ContentWrapper>
-    );
-  }
-
   return (
     <ContentWrapper style={styles.container}>
-      <BackHeader title={model?.name} showBack={true} />
+      <BackHeader title={model.name} showBack={true} />
       <View style={styles.content}>
-        <Image source={{ uri: model?.image }} style={styles.modelImage} />
+        <Image source={{ uri: model.image }} style={styles.modelImage} />
         <Text style={styles.chargerTypesTitle}>Charger Types</Text>
         <FlatList
-          data={model?.chargerTypes}
+          data={model.chargerTypes}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <ChargerTypeItem

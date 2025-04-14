@@ -53,8 +53,8 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      // await loginUser(data.emailOrPhone, data.password);
-      await _loginUser(data.emailOrPhone, data.password);
+      await loginUser(data.emailOrPhone, data.password);
+      // await _loginUser(data.emailOrPhone, data.password);
       Alert.alert('Login Successful');
       navigation.navigate('AddCar');
     } catch (error) {

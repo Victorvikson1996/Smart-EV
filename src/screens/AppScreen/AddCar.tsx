@@ -16,7 +16,7 @@ export const AddCar = ({ navigation }: AddCarScreenProps) => {
         RightComponent={
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('CarBrand')}
+            onPress={() => navigation.navigate('Tab')}
           >
             <Text>Skip</Text>
           </TouchableOpacity>

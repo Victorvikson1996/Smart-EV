@@ -6,8 +6,7 @@ import React, {
   ReactNode
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthStateType } from '../types';
-import { UserProfile } from '../types';
+import { AuthStateType, UserProfile } from '../types';
 import { supabase } from './SuperbaseClient';
 
 const AuthContext = createContext<AuthStateType | undefined>(undefined);
@@ -19,6 +18,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    // Sync with Supabase auth state
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth Event:', event);
+        if (session?.user) {
+          const { data: profileData, error } = await supabase
+            .from('profiles')
+            .select('first_name, last_name, phone')
+            .eq('id', session.user.id)
+            .single();
+
+          if (error) {
+            console.error('Profile fetch error:', error.message);
+            setUser(null);
+          } else {
+            const userProfile: UserProfile = {
+              id: session.user.id,
+              email: session.user.email!,
+              firstName: profileData.first_name,
+              lastName: profileData.last_name,
+              phone: profileData.phone
+            };
+            setUser(userProfile);
+            await AsyncStorage.setItem('user', JSON.stringify(userProfile));
+          }
+        } else {
+          setUser(null);
+          await AsyncStorage.removeItem('user');
+        }
+        setLoading(false);
+      }
+    );
+
+    // Load initial user
     const initializeAuth = async () => {
       const storedUser = await AsyncStorage.getItem('user');
       if (storedUser) {
@@ -27,6 +60,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setLoading(false);
     };
     initializeAuth();
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   const loginUser = async (emailOrPhone: string, password: string) => {
@@ -44,25 +81,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       if (error) throw error;
 
-      const user = data.user;
-      if (user) {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        if (profileError) throw profileError;
-
-        const userProfile: UserProfile = {
-          id: user.id,
-          email: user.email!,
-          firstName: profileData.first_name,
-          lastName: profileData.last_name,
-          phone: profileData.phone
-        };
-        setUser(userProfile);
-        await AsyncStorage.setItem('user', JSON.stringify(userProfile));
-      }
+      // User is set via onAuthStateChange
     } catch (error) {
       console.error('Error logging in:', error);
       throw error;
@@ -79,53 +98,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       if (error) throw error;
-
-      if (data) {
-        console.log('User data:', data);
-      }
+      console.log('Google Sign-In Data:', data);
     } catch (error) {
       console.error('Error signing in with Gmail:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const _signUpUser = async (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    phone: string
-  ) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) throw error;
-
-      const user = data.user;
-      if (user) {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            { id: user.id, first_name: firstName, last_name: lastName, phone }
-          ])
-          .select()
-          .single();
-        if (profileError) throw profileError;
-
-        const userProfile: UserProfile = {
-          id: user.id,
-          email: user.email!,
-          firstName: profileData.first_name,
-          lastName: profileData.last_name,
-          phone: profileData.phone
-        };
-        setUser(userProfile);
-        await AsyncStorage.setItem('user', JSON.stringify(userProfile));
-      }
-    } catch (error) {
-      console.error('Error signing up:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -146,24 +121,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       const user = data.user;
       if (user) {
-        const { data: profileData, error: profileError } = await supabase
+        const { error: profileError } = await supabase
           .from('profiles')
           .insert([
             { id: user.id, first_name: firstName, last_name: lastName, phone }
-          ])
-          .select()
-          .single();
+          ]);
 
         if (profileError) throw profileError;
-        const userProfile: UserProfile = {
-          id: user.id,
-          email: user.email!,
-          firstName: profileData.first_name,
-          lastName: profileData.last_name,
-          phone: profileData.phone
-        };
-        setUser(userProfile);
-        await AsyncStorage.setItem('user', JSON.stringify(userProfile));
+        // User is set via onAuthStateChange
       }
     } catch (error) {
       console.error('Error signing up:', error);
@@ -178,8 +143,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      await AsyncStorage.removeItem('user');
-      setUser(null);
+      // User is cleared via onAuthStateChange
     } catch (error) {
       console.error('Error logging out:', error);
       throw error;
@@ -196,10 +160,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         password: newPassword
       });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
+      if (error) throw error;
       return { success: true, message: 'Password reset successful' };
     } catch (error) {
       console.error('Error resetting password:', error);

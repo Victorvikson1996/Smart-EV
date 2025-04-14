@@ -9,13 +9,15 @@ export type AuthStackParamList = {
   Otp: undefined;
   AddCar: undefined;
   CarBrand: undefined;
-  CarBrandDetails: { brandId: string; models: string[] };
+  CarBrandDetails: undefined;
   CarCharger: {
     modelId: string;
     brandId: string;
   };
   AddCarName: undefined;
   AddCarSuccess: undefined;
+  CarChargerSuccess: undefined;
+  Tab: undefined;
 };
 
 export type MainTabParamList = {
@@ -33,7 +35,7 @@ export type AppStackParamList = {
   AddCar: undefined;
   CarBrand: undefined;
   CarCharger: undefined;
-  CarBrandDetails: { brand: string };
+  CarBrandDetails: { brandId: string; modelId: string };
   CarChargerDetails: { charger: string };
   CarChargerSuccess: undefined;
   Map: undefined;

@@ -46,12 +46,12 @@ export const CarBrandScreen = ({ navigation }: CarBrandScreenProps) => {
     extrapolate: 'clamp'
   });
 
-  const navigateToBrandDetails = (brand: CarBrand) => {
-    navigation.navigate('CarBrandDetails', {
-      brandId: brand.id,
-      models: brand.models.map((model) => model.name)
-    });
-  };
+  // const navigateToBrandDetails = (brand: CarBrand) => {
+  //   navigation.navigate('CarBrandDetails', {
+  //     brandId: brand.id,
+  //     models: brand.models.map((model) => model.name)
+  //   });
+  // };
 
   if (isLoading) {
     return <Loader />;
@@ -66,12 +66,7 @@ export const CarBrandScreen = ({ navigation }: CarBrandScreenProps) => {
           RightComponent={
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() =>
-                navigation.navigate('CarBrandDetails', {
-                  brandId: '',
-                  models: []
-                })
-              }
+              onPress={() => navigation.navigate('Tab')}
             >
               <Text>Skip</Text>
             </TouchableOpacity>
