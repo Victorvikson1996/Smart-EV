@@ -13,3 +13,10 @@ export type Route = {
   duration: string;
   chargingStops: ChargingStation[];
 };
+
+export type Vehicle = {
+  brandId: string;
+  modelId: string;
+  chargerType: string;
+  batteryCapacityKwh: number;
+};
