@@ -1,7 +1,14 @@
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import React from 'react';
+import { MainTabNavigationProp } from '../../Navigation/types';
 
-export const MapScreen = () => {
+const { width, height } = Dimensions.get('window');
+
+type MapScreenProps = {
+  navigation: MainTabNavigationProp<'Map'>;
+};
+
+export const MapScreen = ({ navigation }: MapScreenProps) => {
   return (
     <View>
       <Text>MapScreen</Text>
