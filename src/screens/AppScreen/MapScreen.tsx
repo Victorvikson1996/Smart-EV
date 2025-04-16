@@ -9,10 +9,11 @@ import {
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MainTabNavigationProp } from '../../Navigation/types';
 import { supabase, useAuth } from '../../api';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { EV_CAR_BRANDS } from '../../constants';
+import { appgreen, EV_CAR_BRANDS } from '../../constants';
+import * as Location from 'expo-location';
 
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -51,26 +52,53 @@ const fetchChargingStations = async (
   const data = await response.json();
   const places = data.results;
 
-  const compatibleStations: ChargingStation[] = places
-    .map((place: any) => {
-      const brand = EV_CAR_BRANDS.find((b) => b.id === vehicle.brandId);
-      const model = brand?.models.find((m) => m.id === vehicle.modelId);
-      const chargerTypes = model?.chargerTypes.map((c: any) => c.name) || [];
+  let stations: ChargingStation[] = places.map((place: any) => ({
+    id: place.place_id,
+    name: place.name,
+    latitude: place.geometry.location.lat,
+    longitude: place.geometry.location.lng,
+    price: 'Unknown',
+    // Placeholder charger types (since API may not provide this)
+    chargerTypes: ['CCS', 'CHAdeMO', 'Type 2'] // Adjust based on real data
+  }));
 
-      return {
-        id: place.place_id,
-        name: place.name,
-        latitude: place.geometry.location.lat,
-        longitude: place.geometry.location.lng,
-        price: 'Unknown',
-        chargerTypes
-      };
-    })
-    .filter((station: ChargingStation) =>
-      station.chargerTypes.includes(vehicle.chargerType)
+  // Filter by charger type if vehicle is provided
+  if (vehicle) {
+    const brand = EV_CAR_BRANDS.find((b) => b.id === vehicle.brandId);
+    const model = brand?.models.find((m) => m.id === vehicle.modelId);
+    const compatibleChargerTypes = model?.chargerTypes.map(
+      (c: any) => c.name
+    ) || [vehicle.chargerType];
+
+    stations = stations.filter((station) =>
+      station.chargerTypes?.some((type) =>
+        compatibleChargerTypes.includes(type)
+      )
     );
+  }
 
-  return compatibleStations;
+  return stations;
+
+  // const compatibleStations: ChargingStation[] = places
+  //   .map((place: any) => {
+  //     const brand = EV_CAR_BRANDS.find((b) => b.id === vehicle.brandId);
+  //     const model = brand?.models.find((m) => m.id === vehicle.modelId);
+  //     const chargerTypes = model?.chargerTypes.map((c: any) => c.name) || [];
+
+  //     return {
+  //       id: place.place_id,
+  //       name: place.name,
+  //       latitude: place.geometry.location.lat,
+  //       longitude: place.geometry.location.lng,
+  //       price: 'Unknown',
+  //       chargerTypes
+  //     };
+  //   })
+  //   .filter((station: ChargingStation) =>
+  //     station.chargerTypes.includes(vehicle.chargerType)
+  //   );
+
+  // return compatibleStations;
 };
 
 const useChargingStations = (
@@ -87,7 +115,7 @@ const useChargingStations = (
       vehicle?.modelId
     ],
     queryFn: () => fetchChargingStations(latitude!, longitude!, vehicle),
-    enabled: !!vehicle && !!latitude && !!longitude,
+    enabled: !!latitude && !!longitude,
     throwOnError: true
     // onError: (error: AxiosError) => {
     //   console.error('Error fetching stations:', error);
@@ -142,8 +170,77 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
 
   const snapPoints = ['20%', '50%'];
 
+  // Fetch user's selected vehicle
+  useEffect(() => {
+    const fetchVehicle = async () => {
+      if (!user) return;
+      try {
+        const { data, error } = await supabase
+          .from('cars')
+          .select('brand_id, model_id, charger_type, battery_capacity_kwh')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const selectedVehicle = data[0];
+          setVehicle({
+            brandId: selectedVehicle.brand_id,
+            modelId: selectedVehicle.model_id,
+            chargerType: selectedVehicle.charger_type,
+            batteryCapacityKwh: selectedVehicle.battery_capacity_kwh
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching vehicle:', error);
+        Alert.alert('Error', 'Please add a vehicle in your profile.');
+      }
+    };
+    fetchVehicle();
+  }, [user]);
+
+  useEffect(() => {
+    const getLocation = async () => {
+      try {
+        // Request location permissions
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            'Permission Denied',
+            'Location access is required to find charging stations.'
+          );
+          // Fallback to AsyncStorage
+          const storedLocation = await AsyncStorage.getItem('lastLocation');
+          if (storedLocation) {
+            const { latitude, longitude } = JSON.parse(storedLocation);
+            setUserLocation({ latitude, longitude });
+          }
+          return;
+        }
+
+        // Get current position
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High
+        });
+        const { latitude, longitude } = location.coords;
+        setUserLocation({ latitude, longitude });
+
+        // Save to AsyncStorage
+        await AsyncStorage.setItem(
+          'lastLocation',
+          JSON.stringify({ latitude, longitude })
+        );
+      } catch (error) {
+        console.error('Error getting location:', error);
+        Alert.alert('Error', 'Unable to retrieve your location.');
+      }
+    };
+    getLocation();
+  }, []);
+
   const handleSearch = async (data: any, details: any) => {
-    if (!userLocation || !vehicle) {
+    if (!userLocation) {
       Alert.alert('Error', 'Location or vehicle not set.');
       return;
     }
@@ -158,7 +255,10 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
     origin: { latitude: number; longitude: number },
     destination: { latitude: number; longitude: number }
   ) => {
-    if (!vehicle) return;
+    if (!vehicle) {
+      Alert.alert('Error', 'Please add a vehicle to plan a route.');
+      return;
+    }
     try {
       const data = await fetchRoute(origin, destination);
       const routeData = data.routes[0];
@@ -209,7 +309,7 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
   // Handle view details
   const handleViewDetails = useCallback(
     (stationId: string) => {
-      // navigation.navigate('ChargingStationDetails', { stationId });
+      // navigation.navigate('SectionScreen', { stationId });
     },
     [navigation]
   );
@@ -221,9 +321,14 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
 
   return (
     <ContentWrapper style={styles.container}>
-      {/* <MapView
+      {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <Text style={styles.loadingText}>Loading stations...</Text>
+        </View>
+      )}
+      <MapView
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_DEFAULT}
         style={styles.map}
         initialRegion={
           userLocation
@@ -236,6 +341,7 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
             : undefined
         }
         showsUserLocation
+        // customMapStyle={uberMapStyle}
       >
         {stations.map((station) => (
           <Marker
@@ -246,7 +352,7 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
             }}
             onPress={() => handleMarkerPress(station)}
           >
-            <Icon name='ev-station' size={30} color='#00F' />
+            <Icon name='ev-station' size={30} color={appgreen} />
           </Marker>
         ))}
         {route && (
@@ -270,7 +376,7 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
             textInput: styles.searchInput
           }}
         />
-      </View> */}
+      </View>
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
@@ -290,13 +396,39 @@ export const MapScreen = ({ navigation }: MapScreenProps) => {
   );
 };
 
+export const uberMapStyle = [
+  {
+    elementType: 'geometry',
+    stylers: [{ color: '#f5f5f5' }]
+  },
+  {
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#616161' }]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [{ color: '#ffffff' }]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry.stroke',
+    stylers: [{ color: '#c9c9c9' }]
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [{ color: '#e0f7fa' }]
+  }
+];
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
   },
   map: {
-    width,
-    height
+    width: width,
+    height: height
   },
   searchContainer: {
     position: 'absolute',
@@ -342,5 +474,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888',
     textAlign: 'center'
+  },
+  loadingText: {
+    color: '#FFF',
+    fontSize: 18
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000
   }
 });

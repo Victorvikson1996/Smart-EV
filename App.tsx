@@ -7,6 +7,7 @@ import { AuthProvider } from './src/api';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient();
+import 'react-native-get-random-values';
 
 export default function App() {
   return (

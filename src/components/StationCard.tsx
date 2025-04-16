@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
   stationName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
+    color: '#333'
   },
   stationPrice: {
     fontSize: 16,
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   detailsButtonText: {
-    color: '#FFF',
+    color: 'red',
     fontSize: 16,
     fontWeight: 'bold'
   },
