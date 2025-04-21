@@ -4,7 +4,11 @@ export type ChargingStation = {
   latitude: number;
   longitude: number;
   price?: string;
-  chargerTypes: string[];
+  chargerTypes?: string[];
+  address?: string;
+  connectorCount?: number;
+  power?: string;
+  availability?: string;
 };
 
 export type Route = {

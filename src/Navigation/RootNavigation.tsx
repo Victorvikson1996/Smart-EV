@@ -5,6 +5,8 @@ import { AuthNavigation } from './AuthNavigation';
 import { HomeNavigation } from './HomeNavigation';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuth } from '../api';
+import { ChargingStation } from '../types';
+import { MapScreen, StationDetailsModal } from '../screens/AppScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +22,15 @@ export const RootNavigation = () => {
           <>
             <Stack.Screen name='Tab' component={TabNavigation} />
             <Stack.Screen name='Home' component={HomeNavigation} />
+            <Stack.Screen
+              name='StationDetailsModal'
+              component={StationDetailsModal}
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+                cardStyle: { backgroundColor: 'transparent' }
+              }}
+            />
           </>
         ) : (
           <Stack.Screen name='Auth' component={AuthNavigation} />

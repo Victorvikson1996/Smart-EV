@@ -1,5 +1,6 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { ChargingStation } from '../types';
 
 export type AuthStackParamList = {
   Splash: undefined;
@@ -21,7 +22,12 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-  Map: undefined;
+  Map: {
+    destination: {
+      latitude: number;
+      longitude: number;
+    };
+  };
   Sessions: undefined;
   Reservation: undefined;
   Profile: undefined;
@@ -52,6 +58,7 @@ export type AppStackParamList = {
   PaymentMethod: undefined;
   ShowSession: undefined;
   StationSearch: undefined;
+  StationDetailsModal: { station: ChargingStation };
 };
 
 export type AuthNavigationProp<ScreenName extends keyof AuthStackParamList> =

@@ -8,3 +8,4 @@ export * from './CarBrandDetailScreen';
 export * from './CarChargerScreen';
 export * from './CarChargerSuccess';
 export * from './ProfileScrreen';
+export * from './StationDetailsModal';
