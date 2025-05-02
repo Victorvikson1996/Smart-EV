@@ -12,3 +12,4 @@ export * from './CarBrandItem';
 export * from './ModelItem';
 export * from './ChargerItem';
 export * from './StationCard';
+export * from './SearchBar';

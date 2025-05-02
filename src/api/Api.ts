@@ -37,15 +37,15 @@ export const fetchEVData = async (): Promise<CarBrand[]> => {
     });
 
     // Process and return the data in the desired format
-    const data = response.data.map((brand: any) => ({
+    const data = response.data.map((brand: CarBrand) => ({
       id: brand.id,
       name: brand.name,
       image: brand.image,
-      models: brand.models.map((model: any) => ({
+      models: brand.models.map((model: EVModel) => ({
         id: model.id,
         name: model.name,
         image: model.image,
-        chargerTypes: model.chargerTypes.map((charger: any) => ({
+        chargerTypes: model.chargerTypes.map((charger: ChargerType) => ({
           id: charger.id,
           name: charger.name,
           image: charger.image
